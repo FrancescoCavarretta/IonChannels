@@ -6,6 +6,7 @@ NEURON	{
 	NONSPECIFIC_CURRENT ihcn
 	RANGE gbar, vhh1, kh1, vhh2, kh2, a0h, b0h
         GLOBAL vshh, pkh1, pkh2
+        GLOBAL htau_min, htau_max_var, htau_sh, htau_k_var1, htau_k_var2
 }
 
 UNITS	{
@@ -29,6 +30,12 @@ PARAMETER	{
         pkh2 = 0
         a0h = 0.076517
         b0h = 0.193
+
+        htau_min = 0 (ms)
+        htau_max_var = 0
+        htau_sh = 0 (mV)
+        htau_k_var1 = 0
+        htau_k_var2 = 0
 }
 
 ASSIGNED	{
@@ -80,9 +87,12 @@ FUNCTION efun(z) {
 
 PROCEDURE rates(){
 	UNITSOFF
-		hAlpha =  a0h*efun((v - hinf_vh1)/hinf_k1)
-		hBeta  =  b0h*exp((v - hinf_vh2)/hinf_k2)
-		hInf = hAlpha/(hAlpha + hBeta)
-		hTau = 1/(hAlpha + hBeta)
+	hAlpha =  a0h * efun((v - hinf_vh1)/hinf_k1)
+	hBeta  =  b0h * exp((v - hinf_vh2)/hinf_k2)
+	hInf = hAlpha/(hAlpha + hBeta)
+
+        hAlpha =  a0h * efun((v - vhh1 - htau_sh) / (kh1 * (1 + htau_k_var1))
+	hBeta  =  b0h *  exp((v  - vhh2 - htau_sh) / (kh2 * (1 + htau_k_var2))
+	hTau = htau_min + (1 + htau_max_var) / (hAlpha + hBeta)
 	UNITSON
 }

@@ -9,6 +9,9 @@ NEURON	{
 	USEION k READ ek WRITE ik
 	RANGE gbar, vhm, km, vhh, kh
         GLOBAL vshm, pkm, vshh, pkh
+
+        GLOBAL mtau_min, mtau_max_var, mtau_sh, mtau_k_var1, mtau_k_var2
+        GLOBAL htau_min, htau_max_var, htau_sh, htau_k_var
 }
 
 UNITS	{
@@ -29,6 +32,17 @@ PARAMETER	{
         kh = 11 (/mV)
         vshh = 0 (mV)
         pkh = 0
+
+        mtau_min = 0 (ms)
+        mtau_max_var = 0
+        mtau_sh = 0 (mV)
+        mtau_k_var1 = 0
+        mtau_k_var2 = 0
+
+        htau_min = 0 (ms)
+        htau_max_var = 0
+        htau_sh = 0 (mV)
+        htau_k_var = 0
 }
 
 ASSIGNED	{
@@ -78,15 +92,17 @@ INITIAL{
 PROCEDURE rates(){
   LOCAL qt
   qt = 2.3^((celsius-21)/10)
+  
   UNITSOFF
   mInf = 1 / (1 + exp(-(v - minf_vh) / minf_k))
   hInf = 1 / (1 + exp((v - hinf_vh) / hinf_k))
   
-        if(v<-50){
-		    mTau =  (1.25+175.03*exp(-(v + 10) * -0.026))/qt
-        }else{
-            mTau = ((1.25+13*exp(-(v + 10)*0.026)))/qt
+        if (v < -50) {
+	    mTau =  ( 1.25 + mtau_min + 175.03 * (1 + mtau_max_var) * exp( (v - (-10 + mtau_sh)) / (38.461) * (1 + mtau_k_var1)) ) / qt
+        } else {
+            mTau =  ( 1.25 + mtau_min + 13     * (1 + mtau_max_var) * exp(-(v - (-10 + mtau_sh)) / (38.461) * (1 + mtau_k_var2)) ) / qt
         }
-		hTau =  (360+(1010+24*(v + 10+55))*exp(-((v + 10+75)/48)^2))/qt
+
+	hTau =  ( 360 + htau_min + (1 + htau_max_var) * (1010 + 24 * (v + 65 - htau_sh)) * exp(-((v + 85 - htau_sh) / (48 * (1 + htau_k_var)) ^ 2) )/qt
   UNITSON
 }

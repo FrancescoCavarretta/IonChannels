@@ -7,6 +7,9 @@ NEURON	{
 	RANGE gbar, vhm, km
         GLOBAL vshm, pkm
         
+        RANGE  mtau_max, mtau_k, mtau_k_var
+        GLOBAL mtau_max_var, mtau_k_var, mtau_min, mtau_sh
+        
 }
 
 UNITS	{
@@ -22,6 +25,13 @@ PARAMETER	{
         km = 9.7 (/mV)
         vshm = 0 (mV)
         pkm = 0
+        
+        mtau_min = 0 (ms)
+        mtau_max = 4.0 (ms)
+        mtau_max_var = 0
+        mtau_sh = 0 (mV)
+        mtau_k = 44.14 (/mV)
+        mtau_k_var = 0
         
 }
 
@@ -61,6 +71,7 @@ INITIAL{
 PROCEDURE rates(){
 	UNITSOFF
 	mInf =  1 / (1 + exp( -(v - minf_vh) / minf_k ) )
-	mTau =  0.2*20.000/(1+exp(((v -(-46.560))/(-44.140))))
+        
+	mTau =  mtau_min + mtau_max * (1 + mtau_max_var) / (1 + exp( - (v - (-46.560 + mtau_sh)) / (mtau_k * (1 + mtau_k_var))))
 	UNITSON
 }

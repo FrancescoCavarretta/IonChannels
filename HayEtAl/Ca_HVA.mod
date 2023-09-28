@@ -6,6 +6,9 @@ NEURON	{
 	USEION ca READ eca WRITE ica
 	RANGE gbar, vhm1, km1, vhh1, kh1, vhm2, km2, vhh2, kh2, a0m, a0h, b0m, b0h
         GLOBAL vshm, pkm1, pkm2, vshh, pkh1, pkh2
+
+        GLOBAL mtau_min, mtau_max_var, mtau_sh, mtau_k_var1, mtau_k_var2
+        GLOBAL htau_min, htau_max_var, htau_sh, htau_k_var1, htau_k_var2
 }
 
 UNITS	{
@@ -40,6 +43,18 @@ PARAMETER	{
         vshh = 0 (mV)
         pkh1 = 0
         pkh2 = 0
+
+        mtau_min = 0 (ms)
+        mtau_max_var = 0
+        mtau_sh = 0 (mV)
+        mtau_k_var1 = 0
+        mtau_k_var2 = 0
+
+        htau_min = 0 (ms)
+        htau_max_var = 0
+        htau_sh = 0 (mV)
+        htau_k_var1 = 0
+        htau_k_var2 = 0
 }
 
 ASSIGNED	{
@@ -118,12 +133,12 @@ PROCEDURE rates(){
 		hBeta  =  b0h / (exp(-(v - hinf_vh2)/hinf_k2)+1)
 		hInf = hAlpha / (hAlpha + hBeta)
         
-		mAlpha =  0.055*3.8*efun(-(v+27)/3.8)
-    		mBeta  =  (0.94*exp((-75-v)/17))        
-		mTau = 1/(mAlpha + mBeta)
+		mAlpha =  0.209 * efun(-(v - (-27 + mtau_sh)) / (3.8 * (1 + mtau_k_var1)))
+    		mBeta  =  0.94  *  exp(-(v - (-75 + mtau_sh)) / (17  * (1 + mtau_k_var2)))
+                mTau = ( mtau_min + (1 + mtau_max_var) / (mAlpha + mBeta) ) / qt
         
-		hAlpha =  (0.000457*exp((-13-v)/50))
-		hBeta  =  (0.0065/(exp((-v-15)/28)+1))
-		hTau = 1/(hAlpha + hBeta)
+		hAlpha =  0.000457 *  exp(-(v - (-13 + htau_sh)) / (50 * (1 + htau_k_var1)))
+		hBeta  =  0.0065   / (exp(-(v - (-15 + htau_sh)) / (28 * (1 + htau_k_var2))) + 1)
+                hTau = ( htau_min + (1 + htau_max_var) / (hAlpha + hBeta) ) / qt
 	UNITSON
 }

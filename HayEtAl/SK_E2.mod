@@ -6,8 +6,10 @@ NEURON {
        USEION k READ ek WRITE ik
        USEION ca READ cai
        
-       RANGE gbar, chm, km
+       RANGE gbar, chm, km, mtau_max
        GLOBAL cshm, pkm
+
+       GLOBAL mtau_max_var
 }
 
 UNITS {
@@ -23,6 +25,9 @@ PARAMETER {
         km = 0.208 (1)
         cshm = 0 (mV)
         pkm = 0
+
+        mtau_max = 1 (ms)
+        mtau_max_var = 0
 }
 
 ASSIGNED {
@@ -62,7 +67,7 @@ DERIVATIVE states {
 
 PROCEDURE rates() {
   UNITSOFF
-  mTau = 1      
+  mTau = mtau_max * (1 + mtau_max_var)
   mInf = 1 / (1 + exp(-(log(cai) - minf_ch) / minf_k))
   UNITSON
 }

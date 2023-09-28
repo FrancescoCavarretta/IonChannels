@@ -8,6 +8,9 @@ NEURON	{
 	USEION na READ ena WRITE ina
 	RANGE gbar, vhm, km, vhh, kh
         GLOBAL vshm, pkm, vshh, pkh
+
+        GLOBAL mtau_min, mtau_max_var, mtau_sh, mtau_k_var1, mtau_k_var2
+        GLOBAL htau_min, htau_max_var, htau_sh, htau_k_var1, htau_k_var2
 }
 
 UNITS	{
@@ -28,6 +31,18 @@ PARAMETER	{
         kh = 10 (/mV)
         vshh = 0 (mV)
         pkh = 0
+
+        mtau_min = 0 (ms)
+        mtau_max_var = 0
+        mtau_sh = 0 (mV)
+        mtau_k_var1 = 0
+        mtau_k_var2 = 0
+
+        htau_min = 0 (ms)
+        htau_max_var = 0
+        htau_sh = 0 (mV)
+        htau_k_var1 = 0
+        htau_k_var2 = 0
 }
 
 ASSIGNED	{
@@ -94,11 +109,12 @@ PROCEDURE rates(){
   mInf = 1 / (1 + exp(-(v - minf_vh) / minf_k))
   hInf = 1 / (1 + exp((v - hinf_vh) / hinf_k))
   
-  mAlpha = 0.182 * 6 * efun(-(v + 38)/6)
-  mBeta = 0.124 * 6 * efun((v + 38)/6)
-  mTau = 6*(1/(mAlpha + mBeta))/qt
-  hAlpha = 2.88e-6 * 4.63 * efun((v + 17)/4.63)
-  hBeta = 6.94e-6 * 2.63 * efun(-(v + 64.4)/2.63)
-  hTau = (1/(hAlpha + hBeta))/qt
+  mAlpha = 0.182 * 6 * efun(-(v - (-38 + mtau_sh))/ (6 * (1 + mtau_k_var1)))
+  mBeta  = 0.124 * 6 * efun( (v - (-38 + mtau_sh))  / (6 * (1 + mtau_k_var2)))
+  mTau = (mtau_min + 6 * (1 + mtau_max_var) / (mAlpha + mBeta))/qt
+  
+  hAlpha = 2.88e-6 * 4.63 * efun( (v - (-17 + htau_sh)) / (4.63 * (1 + htau_k_var1)))
+  hBeta  = 6.94e-6 * 2.63 * efun(-(v - (-64.4 + htau_sh))  / (2.63 * (1 + htau_k_var2)))
+  hTau = (htau_min + (1 + htau_max_var) / (hAlpha + hBeta))/qt
   UNITSON
 }

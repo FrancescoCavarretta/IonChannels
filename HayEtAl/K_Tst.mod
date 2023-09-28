@@ -8,6 +8,9 @@ NEURON	{
 	USEION k READ ek WRITE ik
 	RANGE gbar, vhm, km, vhh, kh
         GLOBAL vshm, pkm, vshh, pkh
+
+        GLOBAL mtau_min, mtau_max_var, mtau_sh, mtau_k_var
+        GLOBAL htau_min, htau_max_var, htau_sh, htau_k_var
 }
 
 UNITS	{
@@ -28,6 +31,16 @@ PARAMETER	{
         kh = 10 (/mV)
         vshh = 0 (mV)
         pkh = 0
+
+        mtau_min = 0 (ms)
+        mtau_max_var = 0
+        mtau_sh = 0 (mV)
+        mtau_k_var = 0
+
+        htau_min = 0 (ms)
+        htau_max_var = 0
+        htau_sh = 0 (mV)
+        htau_k_var = 0
 }
 
 ASSIGNED	{
@@ -82,7 +95,7 @@ PROCEDURE rates(){
   mInf = 1 / (1 + exp(-(v - minf_vh) / minf_k))
   hInf = 1 / (1 + exp((v - hinf_vh) / hinf_k))
 
-		mTau =  (0.34+0.92*exp(-(( v + 10+71)/59)^2))/qt
-		hTau =  (8+49*exp(-(( v + 10+73)/23)^2))/qt
+  mTau =  (0.34 + mtau_min + 0.92 * (1 + mtau_max_var) * exp(-(( v - (-81 + mtau_sh)) / (59 * (1 + mtau_k_var))) ^ 2)) / qt
+  hTau =  (8    + htau_min + 49   * (1 + htau_max_var) * exp(-(( v - (-83 + htau_sh)) / (23 * (1 + htau_k_var))) ^ 2)) / qt
   UNITSON
 }
