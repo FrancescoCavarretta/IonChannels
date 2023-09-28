@@ -5,7 +5,7 @@ NEURON {
        SUFFIX SK_E2
        USEION k READ ek WRITE ik
        USEION ca READ cai
-       RANGE gSK_E2bar, gSK_E2, ik
+       RANGE gbar
 }
 
 UNITS {
@@ -16,7 +16,7 @@ UNITS {
 
 PARAMETER {
           v            (mV)
-          gSK_E2bar = .000001 (mho/cm2)
+          gbar = .000001 (mho/cm2)
           zTau = 1              (ms)
           ek           (mV)
           cai          (mM)
@@ -25,7 +25,6 @@ PARAMETER {
 ASSIGNED {
          zInf
          ik            (mA/cm2)
-         gSK_E2	       (mho/cm2)
 }
 
 STATE {
@@ -34,8 +33,7 @@ STATE {
 
 BREAKPOINT {
            SOLVE states METHOD cnexp
-           gSK_E2  = gSK_E2bar * z
-           ik   =  gSK_E2 * (v - ek)
+           ik   =  gbar * z * (v - ek)
 }
 
 DERIVATIVE states {

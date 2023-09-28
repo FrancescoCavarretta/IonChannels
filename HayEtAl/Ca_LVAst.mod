@@ -6,7 +6,7 @@
 NEURON	{
 	SUFFIX Ca_LVAst
 	USEION ca READ eca WRITE ica
-	RANGE gCa_LVAstbar, gCa_LVAst, ica
+	RANGE gbar
 }
 
 UNITS	{
@@ -16,14 +16,13 @@ UNITS	{
 }
 
 PARAMETER	{
-	gCa_LVAstbar = 0.00001 (S/cm2)
+	gbar = 0.00001 (S/cm2)
 }
 
 ASSIGNED	{
 	v	(mV)
 	eca	(mV)
 	ica	(mA/cm2)
-	gCa_LVAst	(S/cm2)
 	mInf
 	mTau    (ms)
 	hInf
@@ -37,8 +36,7 @@ STATE	{
 
 BREAKPOINT	{
 	SOLVE states METHOD cnexp
-	gCa_LVAst = gCa_LVAstbar*m*m*h
-	ica = gCa_LVAst*(v-eca)
+	ica = gbar*m*m*h*(v-eca)
 }
 
 DERIVATIVE states	{

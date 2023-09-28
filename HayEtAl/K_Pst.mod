@@ -7,7 +7,7 @@
 NEURON	{
 	SUFFIX K_Pst
 	USEION k READ ek WRITE ik
-	RANGE gK_Pstbar, gK_Pst, ik
+	RANGE gbar
 }
 
 UNITS	{
@@ -17,14 +17,13 @@ UNITS	{
 }
 
 PARAMETER	{
-	gK_Pstbar = 0.00001 (S/cm2)
+	gbar = 0.00001 (S/cm2)
 }
 
 ASSIGNED	{
 	v	(mV)
 	ek	(mV)
 	ik	(mA/cm2)
-	gK_Pst	(S/cm2)
 	mInf
 	mTau    (ms)
 	hInf
@@ -38,8 +37,7 @@ STATE	{
 
 BREAKPOINT	{
 	SOLVE states METHOD cnexp
-	gK_Pst = gK_Pstbar*m*m*h
-	ik = gK_Pst*(v-ek)
+	ik = gbar*m*m*h*(v-ek)
 }
 
 DERIVATIVE states	{

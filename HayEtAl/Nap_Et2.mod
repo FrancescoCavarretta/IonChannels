@@ -6,7 +6,7 @@
 NEURON	{
 	SUFFIX Nap_Et2
 	USEION na READ ena WRITE ina
-	RANGE gNap_Et2bar, gNap_Et2, ina
+	RANGE gbar
 }
 
 UNITS	{
@@ -23,7 +23,6 @@ ASSIGNED	{
 	v	(mV)
 	ena	(mV)
 	ina	(mA/cm2)
-	gNap_Et2	(S/cm2)
 	mInf
 	mTau    (ms)
 	mAlpha
@@ -40,9 +39,8 @@ STATE	{
 }
 
 BREAKPOINT	{
-	SOLVE states METHOD cnexp
-	gNap_Et2 = gNap_Et2bar*m*m*m*h
-	ina = gNap_Et2*(v-ena)
+	SOLVE states METHOD cnexp 
+	ina = gbar*m*m*m*h*(v-ena)
 }
 
 DERIVATIVE states	{
