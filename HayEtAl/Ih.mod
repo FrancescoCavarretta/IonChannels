@@ -21,29 +21,29 @@ PARAMETER	{
 ASSIGNED	{
 	v	(mV)
 	ihcn	(mA/cm2)
-	mInf
-	mTau    (ms)
-	mAlpha
-	mBeta
+	hInf
+	hTau    (ms)
+	hAlpha
+	hBeta
 }
 
 STATE	{ 
-	m
+	h
 }
 
 BREAKPOINT	{
 	SOLVE states METHOD cnexp
-	ihcn = gbar*m*(v-ehcn)
+	ihcn = gbar*h*(v-ehcn)
 }
 
 DERIVATIVE states	{
 	rates()
-	m' = (mInf-m)/mTau
+	h' = (hInf-h)/hTau
 }
 
 INITIAL{
 	rates()
-	m = mInf
+	h = hInf
 }
 
 PROCEDURE rates(){
@@ -51,9 +51,9 @@ PROCEDURE rates(){
         if(v == -154.9){
             v = v + 0.0001
         }
-		mAlpha =  0.001*6.43*(v+154.9)/(exp((v+154.9)/11.9)-1)
-		mBeta  =  0.001*193*exp(v/33.1)
-		mInf = mAlpha/(mAlpha + mBeta)
-		mTau = 1/(mAlpha + mBeta)
+		hAlpha =  0.001*6.43*(v+154.9)/(exp((v+154.9)/11.9)-1)
+		hBeta  =  0.001*193*exp(v/33.1)
+		hInf = hAlpha/(hAlpha + hBeta)
+		hTau = 1/(hAlpha + hBeta)
 	UNITSON
 }
