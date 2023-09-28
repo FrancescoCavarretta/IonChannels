@@ -16,7 +16,7 @@ UNITS	{
 }
 
 PARAMETER	{
-	gNap_Et2bar = 0.00001 (S/cm2)
+	gbar = 0.00001 (S/cm2)
 }
 
 ASSIGNED	{
