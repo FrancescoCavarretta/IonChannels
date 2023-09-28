@@ -56,29 +56,26 @@ INITIAL{
 	h = hInf
 }
 
+FUNCTION efun(z) {
+	 if (fabs(z) < 1e-4) {
+	    efun = 1 - z/2
+	 }else{
+	    efun = z/(exp(z) - 1)
+         }
+}
+ 
 PROCEDURE rates(){
   LOCAL qt
   qt = 2.3^((celsius-21)/10)
 
-	UNITSOFF
-		mInf = 1.0/(1+exp((v- -52.6)/-4.6))
-    if(v == -38){
-    	v = v+0.0001
-    }
-		mAlpha = (0.182 * (v- -38))/(1-(exp(-(v- -38)/6)))
-		mBeta  = (0.124 * (-v -38))/(1-(exp(-(-v -38)/6)))
-		mTau = 6*(1/(mAlpha + mBeta))/qt
-
-  	if(v == -17){
-   		v = v + 0.0001
-  	}
-    if(v == -64.4){
-      v = v+0.0001
-    }
-
-		hInf = 1.0/(1+exp((v- -48.8)/10))
-    hAlpha = -2.88e-6 * (v + 17) / (1 - exp((v + 17)/4.63))
-    hBeta = 6.94e-6 * (v + 64.4) / (1 - exp(-(v + 64.4)/2.63))
-		hTau = (1/(hAlpha + hBeta))/qt
-	UNITSON
+  UNITSOFF
+  mInf = 1.0/(1+exp(-(v + 52.6)/4.6))
+  mAlpha = 0.182 * 6 * efun(-(v + 38)/6)
+  mBeta = 0.124 * 6 * efun((v + 38)/6)
+  mTau = 6*(1/(mAlpha + mBeta))/qt
+  hInf = 1.0/(1+exp((v + 48.8)/10))
+  hAlpha = 2.88e-6 * 4.63 * efun((v + 17)/4.63)
+  hBeta = 6.94e-6 * 2.63 * efun(-(v + 64.4)/2.63)
+  hTau = (1/(hAlpha + hBeta))/qt
+  UNITSON
 }
