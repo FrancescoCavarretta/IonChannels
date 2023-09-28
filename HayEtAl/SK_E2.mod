@@ -17,38 +17,39 @@ UNITS {
 PARAMETER {
           v            (mV)
           gbar = .000001 (mho/cm2)
-          zTau = 1              (ms)
           ek           (mV)
           cai          (mM)
 }
 
 ASSIGNED {
-         zInf
+         mInf
+         mTau (ms)
          ik            (mA/cm2)
 }
 
 STATE {
-      z   FROM 0 TO 1
+      m   FROM 0 TO 1
 }
 
 BREAKPOINT {
            SOLVE states METHOD cnexp
-           ik   =  gbar * z * (v - ek)
+           ik   =  gbar * m * (v - ek)
 }
 
 DERIVATIVE states {
         rates(cai)
-        z' = (zInf - z) / zTau
+        mTau = 1              
+        m' = (mInf - m) / mTau
 }
 
 PROCEDURE rates(ca(mM)) {
           if(ca < 1e-7 (mM)){
 	              ca = ca + 1e-07 (mM)
           }
-          zInf = 1/(1 + (0.00043 (mM)/ ca)^4.8)
+          mInf = 1/(1 + (0.00043 (mM)/ ca)^4.8)
 }
 
 INITIAL {
         rates(cai)
-        z = zInf
+        m = mInf
 }
