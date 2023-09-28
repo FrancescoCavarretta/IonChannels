@@ -91,8 +91,8 @@ PROCEDURE rates(){
 	hBeta  =  b0h * exp((v - hinf_vh2)/hinf_k2)
 	hInf = hAlpha/(hAlpha + hBeta)
 
-        hAlpha =  a0h * efun((v - vhh1 - htau_sh) / (kh1 * (1 + htau_k_var1))
-	hBeta  =  b0h *  exp((v  - vhh2 - htau_sh) / (kh2 * (1 + htau_k_var2))
+        hAlpha =  a0h * efun((v - vhh1 - htau_sh) / (kh1 * (1 + htau_k_var1)))
+	hBeta  =  b0h *  exp((v  - vhh2 - htau_sh) / (kh2 * (1 + htau_k_var2)))
 	hTau = htau_min + (1 + htau_max_var) / (hAlpha + hBeta)
 	UNITSON
 }

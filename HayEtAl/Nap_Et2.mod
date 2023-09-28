@@ -109,12 +109,12 @@ PROCEDURE rates(){
   mInf = 1 / (1 + exp(-(v - minf_vh) / minf_k))
   hInf = 1 / (1 + exp((v - hinf_vh) / hinf_k))
   
-  mAlpha = 0.182 * 6 * efun(-(v - (-38 + mtau_sh))/ (6 * (1 + mtau_k_var1)))
+  mAlpha = 0.182 * 6 * efun(-(v - (-38 + mtau_sh))  / (6 * (1 + mtau_k_var1)))
   mBeta  = 0.124 * 6 * efun( (v - (-38 + mtau_sh))  / (6 * (1 + mtau_k_var2)))
-  mTau = (mtau_min + 6 * (1 + mtau_max_var) / (mAlpha + mBeta))/qt
+  mTau = (mtau_min + 6 * (1 + mtau_max_var) / (mAlpha + mBeta) )/qt
   
-  hAlpha = 2.88e-6 * 4.63 * efun( (v - (-17 + htau_sh)) / (4.63 * (1 + htau_k_var1)))
+  hAlpha = 2.88e-6 * 4.63 * efun( (v - (-17   + htau_sh))  / (4.63 * (1 + htau_k_var1)))
   hBeta  = 6.94e-6 * 2.63 * efun(-(v - (-64.4 + htau_sh))  / (2.63 * (1 + htau_k_var2)))
-  hTau = (htau_min + (1 + htau_max_var) / (hAlpha + hBeta))/qt
+  hTau = (htau_min +     (1 + htau_max_var) / (hAlpha + hBeta) )/qt
   UNITSON
 }

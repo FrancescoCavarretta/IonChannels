@@ -97,12 +97,12 @@ PROCEDURE rates(){
   mInf = 1 / (1 + exp(-(v - minf_vh) / minf_k))
   hInf = 1 / (1 + exp((v - hinf_vh) / hinf_k))
   
-        if (v < -50) {
-	    mTau =  ( 1.25 + mtau_min + 175.03 * (1 + mtau_max_var) * exp( (v - (-10 + mtau_sh)) / (38.461) * (1 + mtau_k_var1)) ) / qt
-        } else {
-            mTau =  ( 1.25 + mtau_min + 13     * (1 + mtau_max_var) * exp(-(v - (-10 + mtau_sh)) / (38.461) * (1 + mtau_k_var2)) ) / qt
-        }
+  if (v < -50) {
+      mTau =  ( 1.25 + mtau_min + 175.03 * (1 + mtau_max_var) * exp( (v - (-10 + mtau_sh)) / (38.461) * (1 + mtau_k_var1)) ) / qt
+  } else {
+      mTau =  ( 1.25 + mtau_min + 13     * (1 + mtau_max_var) * exp(-(v - (-10 + mtau_sh)) / (38.461) * (1 + mtau_k_var2)) ) / qt
+  }
 
-	hTau =  ( 360 + htau_min + (1 + htau_max_var) * (1010 + 24 * (v + 65 - htau_sh)) * exp(-((v + 85 - htau_sh) / (48 * (1 + htau_k_var)) ^ 2) )/qt
+  hTau =  ( 360 + htau_min + (1 + htau_max_var) * (1010 + 24 * (v + 65 - htau_sh)) * exp(-((v + 85 - htau_sh) / (48 * (1 + htau_k_var))) ^ 2) )/qt
   UNITSON
 }

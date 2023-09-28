@@ -7,7 +7,7 @@ NEURON	{
 	RANGE gbar, vhm, km
         GLOBAL vshm, pkm
         
-        RANGE  mtau_max, mtau_k, mtau_k_var
+        RANGE  mtau_max, mtau_k
         GLOBAL mtau_max_var, mtau_k_var, mtau_min, mtau_sh
         
 }
