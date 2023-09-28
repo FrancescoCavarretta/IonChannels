@@ -43,10 +43,7 @@ DERIVATIVE states {
 }
 
 PROCEDURE rates(ca(mM)) {
-          if(ca < 1e-7 (mM)){
-	              ca = ca + 1e-07 (mM)
-          }
-          mInf = 1/(1 + (0.00043 (mM)/ ca)^4.8)
+  mInf = 1 / (1 + exp(-(log(ca) + 7.752) / 0.208))
 }
 
 INITIAL {

@@ -54,7 +54,7 @@ PROCEDURE rates(){
 	UNITSOFF
 		mAlpha = 3.3e-3*exp(2.5*0.04*(v - -35))
 		mBeta = 3.3e-3*exp(-2.5*0.04*(v - -35))
-		mInf = mAlpha/(mAlpha + mBeta)
 		mTau = (1/(mAlpha + mBeta))/qt
+		mInf = 1 / (1 + exp(-(v + 35) / 5))
 	UNITSON
 }

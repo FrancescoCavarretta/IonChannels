@@ -69,10 +69,12 @@ PROCEDURE rates(){
   mAlpha = 0.182 * 6 * efun(-(v + 38)/6)
   mBeta = 0.124 * 6 * efun((v + 38)/6)
   mTau = (1/(mAlpha + mBeta))/qt
-  mInf = mAlpha/(mAlpha + mBeta)
+  mInf = 1 / (1 + exp(-(v + 40.302) / 6))
+  
   hAlpha = 0.015 * 6 * efun((v + 66) / 6) 
   hBeta  = 0.015 * 6 * efun(-(v + 66) / 6)
   hTau = (1/(hAlpha + hBeta))/qt
-  hInf = hAlpha/(hAlpha + hBeta)
+  hInf = 1 / (1 + exp((v + 66) / 6))
+  
   UNITSON
 }
