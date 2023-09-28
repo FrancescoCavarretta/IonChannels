@@ -4,7 +4,8 @@
 NEURON	{
 	SUFFIX Ih
 	NONSPECIFIC_CURRENT ihcn
-	RANGE gbar
+	RANGE gbar, vhh1, kh1, vhh2, kh2, a0h, b0h
+        GLOBAL vshh, pkh1, pkh2
 }
 
 UNITS	{
@@ -16,6 +17,18 @@ UNITS	{
 PARAMETER	{
 	gbar = 0.00001 (S/cm2) 
 	ehcn =  -45.0 (mV)
+
+        vhh1 = -154.9 (mV)
+        vhh2 = 0 (mV)
+        
+        kh1 = 11.9 (/mV)
+        kh2 = 33.1 (/mV)
+        
+        vshh = 0 (mV)
+        pkh1 = 0
+        pkh2 = 0
+        a0h = 0.076517
+        b0h = 0.193
 }
 
 ASSIGNED	{
@@ -25,6 +38,11 @@ ASSIGNED	{
 	hTau    (ms)
 	hAlpha
 	hBeta
+
+        hinf_vh1 (mV)
+        hinf_k1  (/mV)
+        hinf_vh2 (mV)
+        hinf_k2  (/mV)
 }
 
 STATE	{ 
@@ -42,6 +60,12 @@ DERIVATIVE states	{
 }
 
 INITIAL{
+        hinf_vh1 = vhh1 + vshh
+        hinf_k1 = kh1 * (1 + pkh1)
+
+        hinf_vh2 = vhh2 + vshh
+        hinf_k2 = kh2 * (1 + pkh2)
+        
 	rates()
 	h = hInf
 }
@@ -56,8 +80,8 @@ FUNCTION efun(z) {
 
 PROCEDURE rates(){
 	UNITSOFF
-		hAlpha =  0.001*6.43*11.9*efun((v+154.9)/11.9)
-		hBeta  =  0.001*193*exp(v/33.1)
+		hAlpha =  a0h*efun((v - hinf_vh1)/hinf_k1)
+		hBeta  =  b0h*exp((v - hinf_vh2)/hinf_k2)
 		hInf = hAlpha/(hAlpha + hBeta)
 		hTau = 1/(hAlpha + hBeta)
 	UNITSON

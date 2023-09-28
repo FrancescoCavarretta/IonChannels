@@ -6,7 +6,8 @@
 NEURON	{
 	SUFFIX K_Tst
 	USEION k READ ek WRITE ik
-	RANGE gbar
+	RANGE gbar, vhm, km, vhh, kh
+        GLOBAL vshm, pkm, vshh, pkh
 }
 
 UNITS	{
@@ -17,6 +18,16 @@ UNITS	{
 
 PARAMETER	{
 	gbar = 0.00001 (S/cm2)
+
+        vhm = -10 (mV)
+        km = 19 (/mV)
+        vshm = 0 (mV)
+        pkm = 0
+
+        vhh = -76 (mV)
+        kh = 10 (/mV)
+        vshh = 0 (mV)
+        pkh = 0
 }
 
 ASSIGNED	{
@@ -28,6 +39,11 @@ ASSIGNED	{
 	mTau    (ms)
 	hInf
 	hTau    (ms)
+
+        minf_vh (mV)
+        minf_k  (/mV)
+        hinf_vh (mV)
+        hinf_k  (/mV)
 }
 
 STATE	{
@@ -47,6 +63,12 @@ DERIVATIVE states	{
 }
 
 INITIAL{
+        minf_vh = vhm + vshm
+        minf_k = km * (1 + pkm)
+        
+        hinf_vh = vhh + vshh
+        hinf_k = kh * (1 + pkh)
+        
 	rates()
 	m = mInf
 	h = hInf
@@ -56,12 +78,11 @@ PROCEDURE rates(){
   LOCAL qt
   qt = 2.3^((celsius-21)/10)
 
-	UNITSOFF
-		v = v + 10
-		mInf =  1/(1 + exp(-(v+0)/19))
-		mTau =  (0.34+0.92*exp(-((v+71)/59)^2))/qt
-		hInf =  1/(1 + exp(-(v+66)/-10))
-		hTau =  (8+49*exp(-((v+73)/23)^2))/qt
-		v = v - 10
-	UNITSON
+  UNITSOFF
+  mInf = 1 / (1 + exp(-(v - minf_vh) / minf_k))
+  hInf = 1 / (1 + exp((v - hinf_vh) / hinf_k))
+
+		mTau =  (0.34+0.92*exp(-(( v + 10+71)/59)^2))/qt
+		hTau =  (8+49*exp(-(( v + 10+73)/23)^2))/qt
+  UNITSON
 }

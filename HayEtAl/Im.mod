@@ -4,7 +4,8 @@
 NEURON	{
 	SUFFIX Im
 	USEION k READ ek WRITE ik
-	RANGE gbar
+	RANGE gbar, vhm, km
+        GLOBAL vshm, pkm
 }
 
 UNITS	{
@@ -14,7 +15,12 @@ UNITS	{
 }
 
 PARAMETER	{
-	gbar = 0.00001 (S/cm2) 
+	gbar = 0.00001 (S/cm2)
+
+        vhm = -35 (mV)
+        km = 5 (/mV)
+        vshm = 0 (mV)
+        pkm = 0
 }
 
 ASSIGNED	{
@@ -26,6 +32,9 @@ ASSIGNED	{
 	mTau    (ms)
 	mAlpha
 	mBeta
+
+        minf_vh (mV)
+        minf_k  (/mV)
 }
 
 STATE	{ 
@@ -43,6 +52,9 @@ DERIVATIVE states	{
 }
 
 INITIAL{
+        minf_vh = vhm + vshm
+        minf_k = km * (1 + pkm)
+                
 	rates()
 	m = mInf
 }
@@ -51,10 +63,11 @@ PROCEDURE rates(){
   LOCAL qt
   qt = 2.3^((celsius-21)/10)
 
-	UNITSOFF
+  UNITSOFF
+  mInf = 1 / (1 + exp(-(v - minf_vh) / minf_k))
+  
 		mAlpha = 3.3e-3*exp(2.5*0.04*(v - -35))
 		mBeta = 3.3e-3*exp(-2.5*0.04*(v - -35))
 		mTau = (1/(mAlpha + mBeta))/qt
-		mInf = 1 / (1 + exp(-(v + 35) / 5))
-	UNITSON
+  UNITSON
 }

@@ -6,7 +6,8 @@
 NEURON	{
 	SUFFIX Nap_Et2
 	USEION na READ ena WRITE ina
-	RANGE gbar
+	RANGE gbar, vhm, km, vhh, kh
+        GLOBAL vshm, pkm, vshh, pkh
 }
 
 UNITS	{
@@ -17,6 +18,16 @@ UNITS	{
 
 PARAMETER	{
 	gbar = 0.00001 (S/cm2)
+
+        vhm = -52.6 (mV)
+        km = 4.6 (/mV)
+        vshm = 0 (mV)
+        pkm = 0
+
+        vhh = -48.8 (mV)
+        kh = 10 (/mV)
+        vshh = 0 (mV)
+        pkh = 0
 }
 
 ASSIGNED	{
@@ -32,6 +43,11 @@ ASSIGNED	{
 	hTau    (ms)
 	hAlpha
 	hBeta
+
+        minf_vh (mV)
+        minf_k  (/mV)
+        hinf_vh (mV)
+        hinf_k  (/mV)
 }
 
 STATE	{
@@ -51,6 +67,12 @@ DERIVATIVE states	{
 }
 
 INITIAL{
+        minf_vh = vhm + vshm
+        minf_k = km * (1 + pkm)
+        
+        hinf_vh = vhh + vshh
+        hinf_k = kh * (1 + pkh)
+        
 	rates()
 	m = mInf
 	h = hInf
@@ -69,11 +91,12 @@ PROCEDURE rates(){
   qt = 2.3^((celsius-21)/10)
 
   UNITSOFF
-  mInf = 1.0/(1+exp(-(v + 52.6)/4.6))
+  mInf = 1 / (1 + exp(-(v - minf_vh) / minf_k))
+  hInf = 1 / (1 + exp((v - hinf_vh) / hinf_k))
+  
   mAlpha = 0.182 * 6 * efun(-(v + 38)/6)
   mBeta = 0.124 * 6 * efun((v + 38)/6)
   mTau = 6*(1/(mAlpha + mBeta))/qt
-  hInf = 1.0/(1+exp((v + 48.8)/10))
   hAlpha = 2.88e-6 * 4.63 * efun((v + 17)/4.63)
   hBeta = 6.94e-6 * 2.63 * efun(-(v + 64.4)/2.63)
   hTau = (1/(hAlpha + hBeta))/qt

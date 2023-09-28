@@ -4,7 +4,9 @@
 NEURON	{
 	SUFFIX SKv3_1
 	USEION k READ ek WRITE ik
-	RANGE gbar
+	RANGE gbar, vhm, km
+        GLOBAL vshm, pkm
+        
 }
 
 UNITS	{
@@ -14,7 +16,13 @@ UNITS	{
 }
 
 PARAMETER	{
-	gbar = 0.00001 (S/cm2) 
+	gbar = 0.00001 (S/cm2)
+        
+        vhm = 18.7 (mV)
+        km = 9.7 (/mV)
+        vshm = 0 (mV)
+        pkm = 0
+        
 }
 
 ASSIGNED	{
@@ -23,6 +31,9 @@ ASSIGNED	{
 	ik	(mA/cm2)
 	mInf	(1)
 	mTau	(ms)
+
+        minf_vh (mV)
+        minf_k  (/mV)
 }
 
 STATE	{ 
@@ -40,13 +51,16 @@ DERIVATIVE states	{
 }
 
 INITIAL{
+        minf_vh = vhm + vshm
+        minf_k = km * (1 + pkm)
+        
 	rates()
 	m = mInf
 }
 
 PROCEDURE rates(){
-		mInf =  1/(1+exp(((v -(18.700(mV)))/(-9.700(mV)))))
-		mTau =  0.2*20.000(ms)/(1+exp(((v -(-46.560(mV)))/(-44.140(mV)))))
 	UNITSOFF
+	mInf =  1 / (1 + exp( -(v - minf_vh) / minf_k ) )
+	mTau =  0.2*20.000/(1+exp(((v -(-46.560))/(-44.140))))
 	UNITSON
 }
