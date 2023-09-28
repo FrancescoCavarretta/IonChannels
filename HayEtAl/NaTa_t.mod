@@ -17,6 +17,7 @@ PARAMETER	{
 }
 
 ASSIGNED	{
+        celsius (degC)
 	v	(mV)
 	ena	(mV)
 	ina	(mA/cm2)
@@ -54,7 +55,7 @@ INITIAL{
 
 PROCEDURE rates(){
   LOCAL qt
-  qt = 2.3^((34-21)/10)
+  qt = 2.3^((celsius-21)/10)
 	
   UNITSOFF
     if(v == -38){
